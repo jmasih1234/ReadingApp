@@ -10,4 +10,11 @@ This django, Python-based web application will serve as a means to justify and t
    - cd ReadingApp
    - (again) cd ReadingApp
    - py manage.py runserver
-4. 
+4. Lots of Other Tutorials on Youtube if this doesn't work
+Web Application Plans
+Start button that puts the text on screen.
+Finished reading button at the bottom.
+- The finished reading button brings next text until we cycle through everything.
+- Small break inbetween different condidtions for user.
+- *Pause Button Maybe*
+- Reading Comprehension test at the end of the readings
