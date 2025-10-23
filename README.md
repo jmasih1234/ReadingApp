@@ -18,3 +18,4 @@ Finished reading button at the bottom.
 - Small break inbetween different condidtions for user.
 - *Pause Button Maybe*
 - Reading Comprehension test at the end of the readings
+5. Django Setup Video: https://www.youtube.com/watch?v=XRFpSDS0_hY 
