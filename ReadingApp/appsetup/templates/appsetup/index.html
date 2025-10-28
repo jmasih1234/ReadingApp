@@ -1,0 +1,47 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ReadingApp — Demo UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}">
+</head>
+<body>
+  <main class="container">
+    <div class="card">
+      <header class="card-header">
+        <h1>ReadingApp demo</h1>
+        <p class="subtitle">A small, clean UI for displaying text and interactive buttons.</p>
+      </header>
+
+      <section class="card-body">
+        <article class="text-block">
+          <h2>Welcome</h2>
+          <p id="toggle-paragraph">This is a simple text area where you can put reading content, notes, or short instructions.</p>
+        </article>
+
+        <div class="controls">
+          <div class="counter">
+            <button id="dec-btn" class="btn muted">-</button>
+            <span id="count">{{ initial_count }}</span>
+            <button id="inc-btn" class="btn primary">+</button>
+          </div>
+
+          <div class="actions">
+            <button id="toggle-btn" class="btn outline">Toggle text</button>
+            <button id="reset-btn" class="btn danger">Reset</button>
+          </div>
+        </div>
+
+        <footer class="hint">Tip: buttons work client-side — no reload required.</footer>
+      </section>
+    </div>
+  </main>
+
+  <script src="{% static 'appsetup/script.js' %}"></script>
+</body>
+</html>
