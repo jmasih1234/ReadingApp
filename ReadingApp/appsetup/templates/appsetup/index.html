@@ -14,28 +14,65 @@
   <main class="container">
     <div class="card">
       <header class="card-header">
-        <h1>ReadingApp demo</h1>
-        <p class="subtitle">A small, clean UI for displaying text and interactive buttons.</p>
+        <h1>ReadingApp</h1>
       </header>
 
       <section class="card-body">
-        <article class="text-block">
-          <h2>Welcome</h2>
-          <p id="toggle-paragraph">This is a simple text area where you can put reading content, notes, or short instructions.</p>
+
+        <!-- Start Button -->
+        <div class="top-action">
+          <button id="start-btn" class="btn primary">Start</button>
+        </div>
+
+        <!-- Text Display -->
+        <article class="text-block reading-area">
+          <!-- <h2>Reading Passage</h2> -->
+          <p id="reading-text">
+            This is where our text will show up for the reader...
+          </p>
         </article>
 
-        <div class="controls">
-          <div class="counter">
-            <button id="dec-btn" class="btn muted">-</button>
-            <span id="count">{{ initial_count }}</span>
-            <button id="inc-btn" class="btn primary">+</button>
-          </div>
+        <!-- End Button -->
+         <div class="bottom-action">
+          <button id="end-btn" class="btn danger">End</button>
+         </div>
 
-          <div class="actions">
-            <button id="toggle-btn" class="btn outline">Toggle text</button>
-            <button id="reset-btn" class="btn danger">Reset</button>
-          </div>
+
+          <!-- Settings Section -->
+        <div class="settings-section">
+
+            <!-- Font Type Button -->
+            <div class="settings-button">
+              <button class="btn outline">Font Type</button>
+              <div class="options">
+                <label class="option-box"><input type="checkbox"> Font 1</label>
+                <label class="option-box"><input type="checkbox"> Font 2</label>
+                <label class="option-box"><input type="checkbox"> Font 3</label>
+              </div>
+            </div>
+
+            <!-- Background/Text Color Button -->
+            <div class="settings-button">
+              <button class="btn outline">Colors</button>
+              <div class="options">
+                <label class="option-box"><input type="checkbox"> Scheme 1</label>
+                <label class="option-box"><input type="checkbox"> Scheme 2</label>
+                <label class="option-box"><input type="checkbox"> Scheme 3</label>
+              </div>
+            </div>
+
+            <!-- Text Size Button -->
+            <div class="settings-button">
+              <button class="btn outline">Text Size</button>
+              <div class="options">
+                <label class="option-box"><input type="checkbox"> Small</label>
+                <label class="option-box"><input type="checkbox"> Medium</label>
+                <label class="option-box"><input type="checkbox"> Large</label>
+              </div>
+            </div>
+
         </div>
+
 
         <footer class="hint">Tip: buttons work client-side — no reload required.</footer>
       </section>
