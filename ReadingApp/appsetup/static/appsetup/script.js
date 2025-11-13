@@ -10,6 +10,9 @@
   const beginTrialBtn = document.getElementById('begin-trial')
   const randomizeBtn = document.getElementById('randomize-sequence')
   const clearBtn = document.getElementById('clear-sequence')
+  const participantInput = document.getElementById('participant-id')
+  let participantId = null
+  let trialStartMs = null
 
   // Conditions (single-attribute modifications; other attributes remain default)
   const readingArea = document.querySelector('.reading-area')
@@ -128,7 +131,8 @@
       sequenceSlotsEl.appendChild(slot)
     })
     const filled = sequence.every(id=>id!==null)
-    if (beginTrialBtn) beginTrialBtn.disabled = !filled
+    const hasPid = participantInput ? participantInput.value.trim().length>0 : true
+    if (beginTrialBtn) beginTrialBtn.disabled = !(filled && hasPid)
   }
 
   function addCondition(id){
@@ -157,6 +161,8 @@
   // Trial begin hides ordering setup and shows start/end controls
   if (beginTrialBtn) beginTrialBtn.addEventListener('click', ()=>{
     if (!sequence.every(id=>id!==null)) return
+    participantId = participantInput ? participantInput.value.trim() : null
+    if (!participantId) return
     if (orderingSetup) orderingSetup.classList.add('hidden')
     const top = document.querySelector('.top-action'); const bottom=document.querySelector('.bottom-action')
     if (top) top.classList.remove('hidden')
@@ -171,6 +177,7 @@
 
   if (randomizeBtn) randomizeBtn.addEventListener('click', randomizeSequence)
   if (clearBtn) clearBtn.addEventListener('click', clearSequence)
+  if (participantInput) participantInput.addEventListener('input', updateUI)
 
   function showMessage(msg){ if (readingText) readingText.textContent = msg }
   function showSection(idx){ if (readingText) readingText.textContent = sections[idx] }
@@ -193,7 +200,8 @@
     const conditionGroupIndex = Math.floor(currentIndex / 3)
     const condId = sequence[conditionGroupIndex]
     applyCondition(condId)
-    showSection(currentIndex)
+  showSection(currentIndex)
+  trialStartMs = Date.now()
     started = true
     startBtn.disabled = true
     startBtn.classList.add('hidden')
@@ -206,6 +214,41 @@
   if (endBtn) endBtn.addEventListener('click', ()=>{
     if (!started) return
     started = false
+    // Log the completed trial to server
+    const endedMs = Date.now()
+    const conditionGroupIndex = Math.floor(currentIndex / 3)
+    const condId = sequence[conditionGroupIndex]
+    // Compute word count & WPM
+    let wordCount = null
+    let wpm = null
+    try {
+      const text = readingText ? readingText.textContent.trim() : ''
+      if (text.length) {
+        wordCount = text.split(/\s+/).filter(Boolean).length
+      }
+      if (trialStartMs && endedMs && wordCount !== null) {
+        const durationMs = endedMs - trialStartMs
+        const minutes = durationMs / 60000
+        if (minutes > 0) {
+          wpm = wordCount / minutes
+        }
+      }
+    } catch(e) { /* ignore */ }
+    const payload = {
+      participant_id: participantId || (participantInput ? participantInput.value.trim() : ''),
+      section_index: currentIndex,
+      condition_id: condId,
+      started_at_ms: trialStartMs,
+      ended_at_ms: endedMs,
+      duration_ms: (trialStartMs && endedMs) ? (endedMs - trialStartMs) : null,
+      word_count: wordCount,
+      wpm: wpm,
+    }
+    try {
+      fetch('/api/log-trial/', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) })
+        .catch(()=>{})
+    } catch(e) {}
+
     currentIndex += 1
     resetReadingStyles() // revert to defaults between sections
     if (currentIndex >= sections.length){

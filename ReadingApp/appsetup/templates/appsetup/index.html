@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'appsetup/style.css' %}">
 </head>
 <body>
@@ -38,11 +39,16 @@
 
           <!-- Ordering Setup Section -->
   <div id="ordering-setup" class="ordering-setup">
-    <div class="settings-label">Choose the order of 8 conditions (others remain default)</div>
+    <div class="settings-label">Participant & trial setup</div>
+    <div class="settings-button" style="max-width:1200px; width:100%; display:flex; gap:12px; align-items:center;">
+      <label for="participant-id" style="font-weight:600; color:#6b7280;">Participant ID:</label>
+      <input id="participant-id" type="text" placeholder="e.g., P001" style="padding:10px 12px; border:1px solid #c7c7c7; border-radius:6px; min-width:160px;">
+    </div>
+    <div class="settings-label">Choose the order of 8 conditions (each will repeat 3 trials)</div>
     <div class="condition-pool" id="condition-pool"></div>
 
     <div class="sequence-wrapper">
-      <div class="settings-label">Sequence (Section 1 → 8)</div>
+      <div class="settings-label">Sequence (8 groups → each group applies to 3 sections)</div>
       <div class="sequence-slots" id="sequence-slots"></div>
     </div>
 
