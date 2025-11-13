@@ -8,20 +8,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'appsetup/style.css' %}">
 </head>
 <body>
   <main class="container">
     <div class="card">
-      <header class="card-header">
-        <h1>ReadingApp</h1>
-      </header>
-
       <section class="card-body">
 
-        <!-- Start Button -->
-        <div class="top-action">
+        <!-- Start / Finished Buttons (hidden until trial begins) -->
+        <div class="top-action hidden">
           <button id="start-btn" class="btn primary">Start</button>
+          <button id="end-btn" class="btn danger hidden">Finished Reading</button>
         </div>
 
         <!-- Text Display -->
@@ -32,53 +30,35 @@
           </p>
         </article>
 
-        <!-- End Button -->
-         <div class="bottom-action">
-          <button id="end-btn" class="btn danger">End</button>
-         </div>
+  <!-- Bottom action removed: end button now placed next to Start -->
 
 
-          <!-- Settings Section -->
-        <div class="settings-section">
+          <!-- Ordering Setup Section -->
+  <div id="ordering-setup" class="ordering-setup">
+    <div class="settings-label">Participant & trial setup</div>
+    <div class="settings-button" style="max-width:1200px; width:100%; display:flex; gap:12px; align-items:center;">
+      <label for="participant-id" style="font-weight:600; color:#6b7280;">Participant ID:</label>
+      <input id="participant-id" type="text" placeholder="e.g., P001" style="padding:10px 12px; border:1px solid #c7c7c7; border-radius:6px; min-width:160px;">
+    </div>
+    <div class="settings-label">Choose the order of 8 conditions (each will repeat 3 trials)</div>
+    <div class="condition-pool" id="condition-pool"></div>
 
-            <!-- Font Type Button -->
-            <div class="settings-button">
-              <button class="btn outline">Font Type</button>
-              <div class="options">
-                <label class="option-box"><input type="checkbox"> Font 1</label>
-                <label class="option-box"><input type="checkbox"> Font 2</label>
-                <label class="option-box"><input type="checkbox"> Font 3</label>
-              </div>
-            </div>
+    <div class="sequence-wrapper">
+      <div class="settings-label">Sequence (8 groups → each group applies to 3 sections)</div>
+      <div class="sequence-slots" id="sequence-slots"></div>
+    </div>
 
-            <!-- Background/Text Color Button -->
-            <div class="settings-button">
-              <button class="btn outline">Colors</button>
-              <div class="options">
-                <label class="option-box"><input type="checkbox"> Scheme 1</label>
-                <label class="option-box"><input type="checkbox"> Scheme 2</label>
-                <label class="option-box"><input type="checkbox"> Scheme 3</label>
-              </div>
-            </div>
+    <div class="ordering-actions">
+      <button id="clear-sequence" class="btn outline">Clear</button>
+      <button id="begin-trial" class="btn primary" disabled>Begin trial</button>
+    </div>
+  </div>
 
-            <!-- Text Size Button -->
-            <div class="settings-button">
-              <button class="btn outline">Text Size</button>
-              <div class="options">
-                <label class="option-box"><input type="checkbox"> Small</label>
-                <label class="option-box"><input type="checkbox"> Medium</label>
-                <label class="option-box"><input type="checkbox"> Large</label>
-              </div>
-            </div>
-
-        </div>
-
-
-        <footer class="hint">Tip: buttons work client-side — no reload required.</footer>
       </section>
     </div>
   </main>
 
   <script src="{% static 'appsetup/script.js' %}"></script>
+  {{ sections|json_script:"sections-data" }}
 </body>
 </html>
