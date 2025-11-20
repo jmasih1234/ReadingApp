@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from .models import TrialLog
+from .models import TrialLog, PreferenceSurvey
 
 
 def home(request):
@@ -99,3 +99,34 @@ def log_trial(request):
         wpm=wpm,
     )
     return JsonResponse({'ok': True, 'id': log.id})
+
+
+@csrf_exempt
+def save_survey(request):
+    """Accept a JSON payload with ranked condition preferences after trial completion.
+
+    Expected JSON fields:
+    - participant_id: str
+    - ranked_conditions: list of condition IDs ordered from most to least preferred
+    """
+    if request.method != 'POST':
+        return HttpResponseBadRequest('POST required')
+    try:
+        data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return HttpResponseBadRequest('Invalid JSON')
+
+    participant_id = (data.get('participant_id') or '').strip()
+    ranked_conditions = data.get('ranked_conditions')
+
+    if not participant_id:
+        return HttpResponseBadRequest('participant_id required')
+    if not isinstance(ranked_conditions, list) or len(ranked_conditions) != 8:
+        return HttpResponseBadRequest('ranked_conditions must be a list of 8 condition IDs')
+
+    # Use update_or_create to allow resubmission if needed
+    survey, created = PreferenceSurvey.objects.update_or_create(
+        participant_id=participant_id,
+        defaults={'ranked_conditions': ranked_conditions}
+    )
+    return JsonResponse({'ok': True, 'id': survey.id, 'created': created})

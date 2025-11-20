@@ -252,13 +252,176 @@
     currentIndex += 1
     resetReadingStyles() // revert to defaults between sections
     if (currentIndex >= sections.length){
-      showMessage('All sections complete.')
       if (startBtn){ startBtn.disabled = true; startBtn.classList.add('hidden') }
-  if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
+      if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
+      // Show preference survey (don't show completion message as survey will display)
+      showSurvey()
     } else {
       showMessage('Press start to read next section.')
       if (startBtn){ startBtn.disabled = false; startBtn.classList.remove('hidden') }
-  if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
+      if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
     }
   })
+
+  // ============ Preference Survey Logic ============
+  const preferenceSurvey = document.getElementById('preference-survey')
+  const surveyRankingArea = document.getElementById('survey-ranking-area')
+  const submitSurveyBtn = document.getElementById('submit-survey')
+  let surveyRanking = [] // ordered list of condition IDs
+
+  function showSurvey(){
+    console.log('showSurvey called')
+    console.log('preferenceSurvey:', preferenceSurvey)
+    console.log('surveyRankingArea:', surveyRankingArea)
+    if (!preferenceSurvey || !surveyRankingArea) {
+      console.error('Survey elements not found!')
+      return
+    }
+    // Hide reading area, buttons, and show survey
+    if (readingArea) {
+      readingArea.classList.add('hidden')
+      console.log('Reading area hidden')
+    }
+    const topAction = document.querySelector('.top-action')
+    if (topAction) {
+      topAction.classList.add('hidden')
+      console.log('Top action hidden')
+    }
+    preferenceSurvey.classList.remove('hidden')
+    console.log('Survey shown')
+    // Initialize ranking with conditions in original order
+    surveyRanking = CONDITIONS.map(c => c.id)
+    renderSurveyCards()
+    console.log('Survey cards rendered')
+  }
+
+  function renderSurveyCards(){
+    surveyRankingArea.innerHTML = ''
+    surveyRanking.forEach((condId, idx) => {
+      const cond = CONDITIONS.find(c => c.id === condId)
+      if (!cond) return
+      
+      const card = document.createElement('div')
+      card.className = 'survey-condition-card'
+      card.draggable = true
+      card.dataset.conditionId = condId
+      card.dataset.index = idx
+
+      const label = document.createElement('div')
+      label.className = 'condition-label'
+      label.textContent = `${idx + 1}. ${cond.label}`
+
+      const sample = document.createElement('div')
+      sample.className = 'condition-sample'
+      // Apply the condition styling to the sample text
+      sample.textContent = 'The quick brown fox jumps over the lazy dog.'
+      sample.style.fontFamily = DEFAULTS.fontFamily
+      sample.style.fontSize = DEFAULTS.fontSize
+      sample.style.color = DEFAULTS.color
+      sample.style.background = DEFAULTS.background
+      // Apply condition-specific styles
+      if (condId === 'size-small') sample.style.fontSize = '10px'
+      else if (condId === 'size-large') sample.style.fontSize = '24px'
+      else if (condId === 'font-verdana') sample.style.fontFamily = 'Verdana'
+      else if (condId === 'font-inter') sample.style.fontFamily = 'Inter'
+      else if (condId === 'color-wb') {
+        sample.style.color = '#ffffff'
+        sample.style.background = '#000000'
+      } else if (condId === 'color-bblue') {
+        sample.style.color = '#000000'
+        sample.style.background = '#dbeafe'
+      } else if (condId === 'color-bred') {
+        sample.style.color = '#000000'
+        sample.style.background = '#fee2e2'
+      }
+
+      card.appendChild(label)
+      card.appendChild(sample)
+
+      // Drag-and-drop event handlers
+      card.addEventListener('dragstart', handleDragStart)
+      card.addEventListener('dragover', handleDragOver)
+      card.addEventListener('drop', handleDrop)
+      card.addEventListener('dragend', handleDragEnd)
+
+      surveyRankingArea.appendChild(card)
+    })
+  }
+
+  let draggedElement = null
+
+  function handleDragStart(e){
+    draggedElement = e.currentTarget
+    draggedElement.classList.add('dragging')
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/html', draggedElement.innerHTML)
+  }
+
+  function handleDragOver(e){
+    if (e.preventDefault) e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    const afterElement = getDragAfterElement(surveyRankingArea, e.clientY)
+    if (afterElement == null) {
+      surveyRankingArea.appendChild(draggedElement)
+    } else {
+      surveyRankingArea.insertBefore(draggedElement, afterElement)
+    }
+    return false
+  }
+
+  function handleDrop(e){
+    if (e.stopPropagation) e.stopPropagation()
+    return false
+  }
+
+  function handleDragEnd(e){
+    draggedElement.classList.remove('dragging')
+    // Update surveyRanking based on new DOM order
+    const cards = Array.from(surveyRankingArea.querySelectorAll('.survey-condition-card'))
+    surveyRanking = cards.map(card => card.dataset.conditionId)
+    renderSurveyCards()
+  }
+
+  function getDragAfterElement(container, y){
+    const draggableElements = [...container.querySelectorAll('.survey-condition-card:not(.dragging)')]
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect()
+      const offset = y - box.top - box.height / 2
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child }
+      } else {
+        return closest
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element
+  }
+
+  if (submitSurveyBtn) {
+    submitSurveyBtn.addEventListener('click', () => {
+      if (surveyRanking.length !== 8) {
+        alert('Please rank all 8 conditions.')
+        return
+      }
+      const payload = {
+        participant_id: participantId,
+        ranked_conditions: surveyRanking
+      }
+      fetch('/api/save-survey/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(resp => resp.json())
+        .then(data => {
+          if (data.ok) {
+            alert('Survey submitted successfully! Thank you.')
+            // Optionally reload or show completion message
+            preferenceSurvey.innerHTML = '<p style="color:#10b981;font-size:18px;text-align:center;padding:40px;">Survey complete. Thank you for participating!</p>'
+          } else {
+            alert('Survey submission failed.')
+          }
+        })
+        .catch(() => alert('Survey submission error.'))
+    })
+  }
+
 })();
