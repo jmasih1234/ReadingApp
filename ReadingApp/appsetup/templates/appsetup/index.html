@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
-  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}">
+  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}?v=3">
 </head>
 <body>
   <main class="container">
@@ -54,11 +54,23 @@
     </div>
   </div>
 
+  <!-- Preference Survey (shown after all trials complete) -->
+  <div id="preference-survey" class="preference-survey hidden">
+    <div style="text-align:center; margin-bottom:32px;">
+      <h2 style="font-size:24px; font-weight:600; color:#0f172a; margin:0 0 12px;">Post-Trial Survey</h2>
+      <p style="color:#6b7280; font-size:16px; margin:0;">Drag and drop to rank the 8 reading conditions from <strong>most preferred</strong> (top) to <strong>least preferred</strong> (bottom).</p>
+    </div>
+    <div id="survey-ranking-area" class="survey-ranking-area">
+      <!-- JS will populate with draggable condition cards -->
+    </div>
+    <button id="submit-survey" class="btn primary" style="margin-top:32px; padding:16px 32px; font-size:18px;">Submit Survey</button>
+  </div>
+
       </section>
     </div>
   </main>
 
-  <script src="{% static 'appsetup/script.js' %}"></script>
+  <script src="{% static 'appsetup/script.js' %}?v=3"></script>
   {{ sections|json_script:"sections-data" }}
 </body>
 </html>
