@@ -3,21 +3,19 @@
   const endBtn = document.getElementById('end-btn')
   const readingText = document.getElementById('reading-text')
 
-  // New ordering setup elements
   const orderingSetup = document.getElementById('ordering-setup')
-  const conditionPoolEl = document.getElementById('condition-pool')
-  const sequenceSlotsEl = document.getElementById('sequence-slots')
-  const beginTrialBtn = document.getElementById('begin-trial')
+  const pool = document.getElementById('condition-pool')
+  const slots = document.getElementById('sequence-slots')
+  const beginBtn = document.getElementById('begin-trial')
   const randomizeBtn = document.getElementById('randomize-sequence')
   const clearBtn = document.getElementById('clear-sequence')
   const participantInput = document.getElementById('participant-id')
   let participantId = null
   let trialStartMs = null
 
-  // Conditions (single-attribute modifications; other attributes remain default)
   const readingArea = document.querySelector('.reading-area')
   const CONDITIONS = [
-    { id:'default', label:'Default (Arial, 17px, black on white)', apply: ()=>{/* defaults are applied in reset */} },
+    { id:'default', label:'Default (Arial, 17px, black on white)', apply: ()=>{/* defautls are applied in reset */} },
     { id:'size-small', label:'Size: Small (10px)', apply: ()=>{ if (readingText) readingText.style.fontSize='10px' } },
     { id:'size-large', label:'Size: Large (24px)', apply: ()=>{ if (readingText) readingText.style.fontSize='24px' } },
     { id:'font-verdana', label:'Font: Verdana', apply: ()=>{ if (readingText) readingText.style.fontFamily='Verdana' } },
@@ -34,7 +32,6 @@
     background: '#ffffff'
   }
 
-  // Load sections (expect 8) from server context
   let sections = []
   const sectionsEl = document.getElementById('sections-data')
   if (sectionsEl) {
@@ -67,8 +64,7 @@
                 "“Oops.” She grinned at me with her crooked teeth. Her freckles were orange, as if somebody had spray-painted her face with liquid Cheetos. I tried to stay cool. The school counselor had told me a million times, “Count to ten, get control of your temper.” But I was so mad my mind went blank. A wave roared in my ears. I don’t remember touching her, but the next thing I knew, Nancy was sitting on her butt in the fountain, screaming, “Percy pushed me!” Mrs. Dodds materialized next to us. Some of the kids were whispering: “Did you see—” “—the water—” “—like it grabbed her—” I didn’t know what they were talking about. All I knew was that I was in trouble again. As soon as Mrs. Dodds was sure poor little Nancy was okay, promising to get her a new shirt at the museum gift shop, etc., etc., Mrs. Dodds turned on me. There was a triumphant fire in her eyes."]
   }
 
-  // State - now 8 conditions (each repeats 3 times for 24 total trials)
-  let sequence = Array(8).fill(null) // store condition ids (including default)
+  let sequence = Array(8).fill(null)
   let currentIndex = 0
   let started = false
 
@@ -91,8 +87,7 @@
   }
 
   function renderPool(){
-    conditionPoolEl.innerHTML=''
-    // Include all conditions (including default)
+    pool.innerHTML=''
     CONDITIONS.forEach(cond=>{
       const used = sequence.includes(cond.id)
       const pill = document.createElement('button')
@@ -101,12 +96,12 @@
       pill.textContent=cond.label
       pill.disabled = used
       pill.addEventListener('click', ()=>addCondition(cond.id))
-      conditionPoolEl.appendChild(pill)
+      pool.appendChild(pill)
     })
   }
 
   function renderSequence(){
-    sequenceSlotsEl.innerHTML=''
+    slots.innerHTML=''
     sequence.forEach((condId, idx)=>{
       const slot = document.createElement('div')
       slot.className='slot'
@@ -128,11 +123,11 @@
         clearBtn.addEventListener('click', ()=>{ sequence[idx]=null; updateUI() })
         slot.appendChild(clearBtn)
       }
-      sequenceSlotsEl.appendChild(slot)
+      slots.appendChild(slot)
     })
     const filled = sequence.every(id=>id!==null)
     const hasPid = participantInput ? participantInput.value.trim().length>0 : true
-    if (beginTrialBtn) beginTrialBtn.disabled = !(filled && hasPid)
+    if (beginBtn) beginBtn.disabled = !(filled && hasPid)
   }
 
   function addCondition(id){
@@ -158,8 +153,7 @@
     renderSequence()
   }
 
-  // Trial begin hides ordering setup and shows start/end controls
-  if (beginTrialBtn) beginTrialBtn.addEventListener('click', ()=>{
+  if (beginBtn) beginBtn.addEventListener('click', ()=>{
     if (!sequence.every(id=>id!==null)) return
     participantId = participantInput ? participantInput.value.trim() : null
     if (!participantId) return
@@ -185,9 +179,9 @@
   if (startBtn) startBtn.disabled = true
   if (endBtn){
     endBtn.disabled = true
-    endBtn.classList.add('hidden') // keep end button hidden until first Start
+    endBtn.classList.add('hidden')
   }
-  showMessage('Select order of 8 conditions (each repeats 3 times), then Begin trial.')
+  showMessage('Select the order of the conditions, then begin trial.')
   updateUI()
 
   if (startBtn) startBtn.addEventListener('click', ()=>{
@@ -196,7 +190,6 @@
       startBtn.disabled = true
       return
     }
-    // Apply condition for this section (each condition repeats for 3 trials)
     const conditionGroupIndex = Math.floor(currentIndex / 3)
     const condId = sequence[conditionGroupIndex]
     applyCondition(condId)
@@ -214,11 +207,10 @@
   if (endBtn) endBtn.addEventListener('click', ()=>{
     if (!started) return
     started = false
-    // Log the completed trial to server
     const endedMs = Date.now()
     const conditionGroupIndex = Math.floor(currentIndex / 3)
     const condId = sequence[conditionGroupIndex]
-    // Compute word count & WPM
+
     let wordCount = null
     let wpm = null
     try {
@@ -233,7 +225,7 @@
           wpm = wordCount / minutes
         }
       }
-    } catch(e) { /* ignore */ }
+    } catch(e) {}
     const payload = {
       participant_id: participantId || (participantInput ? participantInput.value.trim() : ''),
       section_index: currentIndex,
@@ -246,15 +238,13 @@
     }
     try {
       fetch('/api/log-trial/', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload) })
-        .catch(()=>{})
     } catch(e) {}
 
     currentIndex += 1
-    resetReadingStyles() // revert to defaults between sections
+    resetReadingStyles()
     if (currentIndex >= sections.length){
       if (startBtn){ startBtn.disabled = true; startBtn.classList.add('hidden') }
       if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
-      // Show preference survey (don't show completion message as survey will display)
       showSurvey()
     } else {
       showMessage('Press start to read next section.')
@@ -263,36 +253,22 @@
     }
   })
 
-  // ============ Preference Survey Logic ============
+
+
+
   const preferenceSurvey = document.getElementById('preference-survey')
   const surveyRankingArea = document.getElementById('survey-ranking-area')
   const submitSurveyBtn = document.getElementById('submit-survey')
-  let surveyRanking = [] // ordered list of condition IDs
+  let surveyRanking = []
 
   function showSurvey(){
-    console.log('showSurvey called')
-    console.log('preferenceSurvey:', preferenceSurvey)
-    console.log('surveyRankingArea:', surveyRankingArea)
-    if (!preferenceSurvey || !surveyRankingArea) {
-      console.error('Survey elements not found!')
-      return
-    }
-    // Hide reading area, buttons, and show survey
-    if (readingArea) {
-      readingArea.classList.add('hidden')
-      console.log('Reading area hidden')
-    }
+    if (!preferenceSurvey || !surveyRankingArea) return
+    if (readingArea) readingArea.classList.add('hidden')
     const topAction = document.querySelector('.top-action')
-    if (topAction) {
-      topAction.classList.add('hidden')
-      console.log('Top action hidden')
-    }
+    if (topAction) topAction.classList.add('hidden')
     preferenceSurvey.classList.remove('hidden')
-    console.log('Survey shown')
-    // Initialize ranking with conditions in original order
     surveyRanking = CONDITIONS.map(c => c.id)
     renderSurveyCards()
-    console.log('Survey cards rendered')
   }
 
   function renderSurveyCards(){
@@ -313,13 +289,11 @@
 
       const sample = document.createElement('div')
       sample.className = 'condition-sample'
-      // Apply the condition styling to the sample text
       sample.textContent = 'The quick brown fox jumps over the lazy dog.'
       sample.style.fontFamily = DEFAULTS.fontFamily
       sample.style.fontSize = DEFAULTS.fontSize
       sample.style.color = DEFAULTS.color
       sample.style.background = DEFAULTS.background
-      // Apply condition-specific styles
       if (condId === 'size-small') sample.style.fontSize = '10px'
       else if (condId === 'size-large') sample.style.fontSize = '24px'
       else if (condId === 'font-verdana') sample.style.fontFamily = 'Verdana'
@@ -338,7 +312,6 @@
       card.appendChild(label)
       card.appendChild(sample)
 
-      // Drag-and-drop event handlers
       card.addEventListener('dragstart', handleDragStart)
       card.addEventListener('dragover', handleDragOver)
       card.addEventListener('drop', handleDrop)
@@ -376,7 +349,6 @@
 
   function handleDragEnd(e){
     draggedElement.classList.remove('dragging')
-    // Update surveyRanking based on new DOM order
     const cards = Array.from(surveyRankingArea.querySelectorAll('.survey-condition-card'))
     surveyRanking = cards.map(card => card.dataset.conditionId)
     renderSurveyCards()
@@ -414,7 +386,6 @@
         .then(data => {
           if (data.ok) {
             alert('Survey submitted successfully! Thank you.')
-            // Optionally reload or show completion message
             preferenceSurvey.innerHTML = '<p style="color:#10b981;font-size:18px;text-align:center;padding:40px;">Survey complete. Thank you for participating!</p>'
           } else {
             alert('Survey submission failed.')

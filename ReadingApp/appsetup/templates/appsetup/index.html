@@ -16,29 +16,22 @@
     <div class="card">
       <section class="card-body">
 
-        <!-- Start / Finished Buttons (hidden until trial begins) -->
         <div class="top-action hidden">
           <button id="start-btn" class="btn primary">Start</button>
           <button id="end-btn" class="btn danger hidden">Finished Reading</button>
         </div>
 
-        <!-- Text Display -->
         <article class="text-block reading-area">
-          <!-- <h2>Reading Passage</h2> -->
           <p id="reading-text">
             This is where our text will show up for the reader...
           </p>
         </article>
 
-  <!-- Bottom action removed: end button now placed next to Start -->
-
-
-          <!-- Ordering Setup Section -->
   <div id="ordering-setup" class="ordering-setup">
     <div class="settings-label">Participant & trial setup</div>
-    <div class="settings-button" style="max-width:1200px; width:100%; display:flex; gap:12px; align-items:center;">
-      <label for="participant-id" style="font-weight:600; color:#6b7280;">Participant ID:</label>
-      <input id="participant-id" type="text" placeholder="e.g., P001" style="padding:10px 12px; border:1px solid #c7c7c7; border-radius:6px; min-width:160px;">
+    <div class="settings-button setup-row">
+      <label for="participant-id" class="label-default">Participant ID:</label>
+      <input id="participant-id" type="text" placeholder="e.g., P001" class="input-style">
     </div>
     <div class="settings-label">Choose the order of 8 conditions (each will repeat 3 trials)</div>
     <div class="condition-pool" id="condition-pool"></div>
@@ -54,16 +47,14 @@
     </div>
   </div>
 
-  <!-- Preference Survey (shown after all trials complete) -->
   <div id="preference-survey" class="preference-survey hidden">
-    <div style="text-align:center; margin-bottom:32px;">
-      <h2 style="font-size:24px; font-weight:600; color:#0f172a; margin:0 0 12px;">Post-Trial Survey</h2>
-      <p style="color:#6b7280; font-size:16px; margin:0;">Drag and drop to rank the 8 reading conditions from <strong>most preferred</strong> (top) to <strong>least preferred</strong> (bottom).</p>
+    <div class="survey-header">
+      <h2>Post-Trial Survey</h2>
+      <p>Drag and drop to rank the 8 reading conditions from <strong>most preferred</strong> (top) to <strong>least preferred</strong> (bottom).</p>
     </div>
     <div id="survey-ranking-area" class="survey-ranking-area">
-      <!-- JS will populate with draggable condition cards -->
     </div>
-    <button id="submit-survey" class="btn primary" style="margin-top:32px; padding:16px 32px; font-size:18px;">Submit Survey</button>
+    <button id="submit-survey" class="btn primary submit-button">Submit Survey</button>
   </div>
 
       </section>
