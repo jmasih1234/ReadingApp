@@ -18,15 +18,6 @@ def home(request):
 
 @csrf_exempt
 def log_trial(request):
-    """Accept a JSON payload from the client to record a completed trial.
-
-    Expected JSON fields:
-    - participant_id: str
-    - condition_id: str
-    - duration_ms: int (optional)
-    - word_count: int (optional)
-    - wpm: float (optional; if absent but word_count+duration provided, server derives)
-    """
     if request.method != 'POST':
         return HttpResponseBadRequest('POST required')
     try:
@@ -43,14 +34,13 @@ def log_trial(request):
     duration_ms = data.get('duration_ms')
     word_count = data.get('word_count')
     wpm = data.get('wpm')
-    # Derive WPM server-side if missing and data available
+
     try:
         if (wpm is None or wpm == '') and word_count is not None and duration_ms:
             minutes = float(duration_ms) / 60000.0
             if minutes > 0:
                 wpm = float(word_count) / minutes
     except Exception:
-        # Fallback to None on any unexpected error
         wpm = None
 
     log = TrialLog.objects.create(

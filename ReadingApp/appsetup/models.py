@@ -1,16 +1,11 @@
 from django.db import models
 
 class TrialLog(models.Model):
-	"""Stores a single reading trial event for a participant.
-
-	A trial corresponds to reading one section under a given condition.
-	"""
 	participant_id = models.CharField(max_length=64, db_index=True)
-	condition_id = models.CharField(max_length=64)  # e.g. 'font-inter', 'size-large'
+	condition_id = models.CharField(max_length=64)
 
-	# Reading performance metrics
 	word_count = models.PositiveIntegerField(null=True, blank=True)
-	wpm = models.FloatField(null=True, blank=True, help_text="Words per minute for this trial (derived from word_count and duration_ms)")
+	wpm = models.FloatField(null=True, blank=True)
 	duration_ms = models.PositiveIntegerField(null=True, blank=True)
 
 	class Meta:
