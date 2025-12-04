@@ -16,6 +16,14 @@ def home(request):
     return render(request, 'appsetup/index.html', context)
 
 
+def about(request):
+    return render(request, 'appsetup/about.html')
+
+
+def instructions(request):
+    return render(request, 'appsetup/instructions.html')
+
+
 @csrf_exempt
 def log_trial(request):
     if request.method != 'POST':
