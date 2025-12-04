@@ -1,0 +1,256 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instructions — ReadingApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}?v=3">
+  <style>
+    body {
+      background: #f5f7fb;
+      min-height: 100vh;
+    }
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      background: #ffffff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .title-area h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .title-area p {
+      margin: 0;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-bar a {
+      text-decoration: none;
+      color: #374151;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 15px;
+    }
+    .nav-bar a:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+    }
+    .nav-bar a.active {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+    }
+    .content-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 40px;
+      background: white;
+      margin-top: 32px;
+      margin-bottom: 32px;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .content-wrapper h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #0f172a;
+      line-height: 1.2;
+      letter-spacing: -1px;
+    }
+    .content-wrapper h2 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-top: 48px;
+      margin-bottom: 20px;
+      color: #1f2937;
+      letter-spacing: -0.5px;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 12px;
+    }
+    .content-wrapper h3 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 16px;
+      color: #374151;
+      letter-spacing: -0.3px;
+    }
+    .content-wrapper p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #4b5563;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    .content-wrapper ol, .content-wrapper ul {
+      margin-left: 28px;
+      margin-bottom: 20px;
+    }
+    .content-wrapper li {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #4b5563;
+      margin-bottom: 12px;
+    }
+    .content-wrapper code {
+      background: #f3f4f6;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      color: #2563eb;
+      font-weight: 500;
+    }
+    .content-wrapper pre {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      color: #f3f4f6;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    .content-wrapper pre code {
+      background: transparent;
+      color: #f3f4f6;
+      padding: 0;
+    }
+    .content-wrapper strong {
+      color: #1f2937;
+      font-weight: 600;
+    }
+    .content-wrapper a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .content-wrapper a:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header class="header-section">
+    <div class="title-area">
+      <h1>Reading App</h1>
+      <p>Exploring How Visual Design Variables Impact Reading Performance</p>
+    </div>
+    <nav class="nav-bar">
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'instructions' %}" class="active">Instructions</a>
+    </nav>
+  </header>
+
+  <div class="content-wrapper">
+    <h1>Instructions</h1>
+    
+  
+
+    <h2>Setup Instructions for Researchers</h2>
+
+    <h3>1. Clone the Repository</h3>
+    <pre><code>git clone &lt;repository-url&gt;
+cd ReadingApp</code></pre>
+
+    <h3>2. Install Django</h3>
+    <p>Make sure you have Python installed on your machine, then install Django:</p>
+    <pre><code>pip install django</code></pre>
+
+    <h3>3. Create a Virtual Environment (Recommended)</h3>
+    <p>A virtual environment helps isolate project dependencies:</p>
+    <pre><code># Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+
+# macOS/Linux:
+source venv/bin/activate</code></pre>
+
+    <h3>4. Install Requirements</h3>
+    <pre><code>pip install -r requirements.txt</code></pre>
+
+    <h3>5. Navigate to Project Directory</h3>
+    <pre><code>cd ReadingApp
+cd ReadingApp</code></pre>
+
+    <h3>6. Run Database Migrations</h3>
+    <pre><code>python manage.py migrate</code></pre>
+
+    <h3>7. Create a Superuser (Optional, for Admin Access)</h3>
+    <pre><code>python manage.py createsuperuser</code></pre>
+
+    <h3>8. Start the Development Server</h3>
+    <pre><code>python manage.py runserver</code></pre>
+
+    <p>The application will be available at <code>http://127.0.0.1:8000/</code></p>
+
+    <h2>Using the Application</h2>
+
+    <h3>For Researchers</h3>
+    <ol>
+      <li><strong>Configure Conditions:</strong> Set up the 8 different reading conditions by arranging them in the sequence slots on the home page.</li>
+      <li><strong>Assign Participant ID:</strong> Enter a unique participant identifier (e.g., P001, P002) for tracking purposes.</li>
+      <li><strong>Begin Trial:</strong> Click "Begin trial" to start the experiment sequence. Each condition will be applied to 3 text sections automatically.</li>
+      <li><strong>Monitor Progress:</strong> The application will cycle through all 24 text passages (8 conditions × 3 sections each).</li>
+      <li><strong>Access Data:</strong> After completion, access the admin panel at <code>http://127.0.0.1:8000/admin/</code> to view and export trial logs and survey data.</li>
+    </ol>
+
+    <h3>For Participants</h3>
+    <ol>
+      <li><strong>Start Reading:</strong> When a text passage appears, click the "Start" button and begin reading at your normal pace.</li>
+      <li><strong>Finish Reading:</strong> When you complete the passage, immediately click the "Finished Reading" button.</li>
+      <li><strong>Repeat:</strong> Continue this process for all 24 text passages. The visual conditions will change automatically according to the pre-set sequence.</li>
+      <li><strong>Complete Survey:</strong> After reading all passages, you'll be presented with a post-trial survey. Drag and drop to rank the 8 reading conditions from most preferred (top) to least preferred (bottom).</li>
+      <li><strong>Submit:</strong> Click "Submit Survey" to complete the experiment.</li>
+    </ol>
+
+    <h2>Data Collection</h2>
+    
+    <p>The application automatically tracks and stores:</p>
+    <ul>
+      <li>Participant ID</li>
+      <li>Reading condition (font size, colors, font family)</li>
+      <li>Section index</li>
+      <li>Start and end timestamps</li>
+      <li>Reading duration in milliseconds</li>
+      <li>Word count</li>
+      <li>Words per minute (WPM) — calculated automatically</li>
+      <li>Preference rankings from the post-trial survey</li>
+    </ul>
+  </div>
+</body>
+</html>

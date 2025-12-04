@@ -1,0 +1,199 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>About — ReadingApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}?v=3">
+  <style>
+    body {
+      background: #f5f7fb;
+      min-height: 100vh;
+    }
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      background: #ffffff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .title-area h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .title-area p {
+      margin: 0;
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .nav-bar {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-bar a {
+      text-decoration: none;
+      color: #374151;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 15px;
+    }
+    .nav-bar a:hover {
+      background: #f3f4f6;
+      transform: translateY(-1px);
+    }
+    .nav-bar a.active {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+    }
+    .content-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 40px;
+      background: white;
+      margin-top: 32px;
+      margin-bottom: 32px;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .content-wrapper h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #0f172a;
+      line-height: 1.2;
+      letter-spacing: -1px;
+    }
+    .content-wrapper h2 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-top: 48px;
+      margin-bottom: 20px;
+      color: #1f2937;
+      letter-spacing: -0.5px;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 12px;
+    }
+    .content-wrapper p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #4b5563;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    .content-wrapper ul {
+      margin-left: 28px;
+      margin-bottom: 20px;
+    }
+    .content-wrapper li {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #4b5563;
+      margin-bottom: 12px;
+    }
+    .content-wrapper strong {
+      color: #1f2937;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header class="header-section">
+    <div class="title-area">
+      <h1>Reading App</h1>
+      <p>Exploring How Visual Design Variables Impact Reading Performance</p>
+    </div>
+    <nav class="nav-bar">
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'about' %}" class="active">About</a>
+      <a href="{% url 'instructions' %}">Instructions</a>
+    </nav>
+  </header>
+
+  <div class="content-wrapper">
+    <h1>About ReadingApp</h1>
+    
+    <p>
+      ReadingApp is a Django-based web application designed to support HCI research focused on understanding how visual design variables affect reading performance and comprehension. This Web App helps explore how visual design variables impact reading performance. 
+
+    <h2>Problem Statement</h2>
+    
+    <p>
+      In HCI, the way text appears onscreen (Text color/background color, text size, font, etc.) can affect how difficult it is for a person to read the text. Suboptimal choices in formatting can slow reading speed, impede comprehension, and increase cognitive load, which may impact efficiency and user satisfaction. People read text on screens every day on websites, apps, e-books, learning platforms, and more, so text design choices are greatly important to people. Specifically students use screens to read text daily for classes, so we are focusing on college students as our age demographic to help them with readability in their daily lives with college.
+    </p>
+
+    <p>
+      People interact with digital text daily through websites, apps, e-books, and learning platforms, making text design choices critically important. College students, in particular, rely on screens to read text for classes, assignments, and research. Despite typography being a key element of interface design, there is not yet a consensus among researchers on how specific visual factors directly affect reading speed and comprehension.
+    </p>
+
+    <p>
+      Studying this research problem is essential because it provides evidence-based insights for designers, developers, and educators to make informed design decisions that optimize readability for students and the general population. By systematically testing the effects of these variables, this research contributes to creating more accessible, efficient, and user-friendly digital reading experiences.
+    </p>
+
+    <h2>Primary Goals & Objectives</h2>
+    
+    <p>
+      The primary goal of this research is to understand how visual design variables, specifically text and background color combinations, font size, and font styles affect reading performance and comprehension in everyday human-computer interactions.
+    </p>
+
+    <p>
+      As computer science students, we frequently encounter text in multiple environments:
+    </p>
+    <ul>
+      <li>Essays written in strict academic formatting (MLA, Chicago, APA)</li>
+      <li>Code displayed in Integrated Development Environments (IDEs) with different themes and color schemes</li>
+      <li>Reading assignments on digital platforms with varied defaults</li>
+    </ul>
+
+    <p>
+      Although formatting guidelines exist for academic work, they are typically designed for consistency rather than readability optimization. Likewise, IDEs and digital platforms often allow customization of text appearance, but there is limited research-based guidance on which visual factors actually improve reading speed and comprehension for the average user.
+    </p>
+
+    <p>
+      This study aims to address that gap by systematically testing how font size, text/background color combinations, and font family influence two dependent variables:
+    </p>
+    <ul>
+      <li><strong>Reading speed</strong> — measured in words per minute (WPM)</li>
+      <li><strong>User satisfaction</strong> — gauged from a post-trial preference survey</li>
+    </ul>
+
+    <h2>How This Application Helps</h2>
+    
+    <p>
+      ReadingApp provides a controlled environment for conducting reading performance experiments. Researchers can configure different visual conditions (font sizes, colors, font families) and have participants read text passages under each condition. The application automatically tracks:
+    </p>
+    <ul>
+      <li>Reading duration for each text passage</li>
+      <li>Words per minute (WPM) calculations</li>
+      <li>Participant preferences through a ranking survey</li>
+      <li>All data is logged to a database for later analysis</li>
+    </ul>
+
+    <p>
+      By collecting quantitative performance metrics alongside qualitative preference data, this tool enables researchers to identify which visual design choices truly optimize reading performance and align with user preferences.
+    </p>
+  </div>
+</body>
+</html>
