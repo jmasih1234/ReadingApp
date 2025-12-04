@@ -18,7 +18,6 @@ def home(request):
 
 @csrf_exempt
 def log_trial(request):
-
     if request.method != 'POST':
         return HttpResponseBadRequest('POST required')
     try:
@@ -28,10 +27,6 @@ def log_trial(request):
 
     participant_id = (data.get('participant_id') or '').strip()
     condition_id = (data.get('condition_id') or '').strip()
-    try:
-        section_index = int(data.get('section_index'))
-    except Exception:
-        return HttpResponseBadRequest('section_index required')
 
     if not participant_id or not condition_id:
         return HttpResponseBadRequest('participant_id and condition_id required')
@@ -39,6 +34,7 @@ def log_trial(request):
     duration_ms = data.get('duration_ms')
     word_count = data.get('word_count')
     wpm = data.get('wpm')
+
     try:
         if (wpm is None or wpm == '') and word_count is not None and duration_ms:
             minutes = float(duration_ms) / 60000.0
@@ -49,10 +45,7 @@ def log_trial(request):
 
     log = TrialLog.objects.create(
         participant_id=participant_id,
-        section_index=section_index,
         condition_id=condition_id,
-        started_at_ms=data.get('started_at_ms'),
-        ended_at_ms=data.get('ended_at_ms'),
         duration_ms=duration_ms,
         word_count=word_count,
         wpm=wpm,
