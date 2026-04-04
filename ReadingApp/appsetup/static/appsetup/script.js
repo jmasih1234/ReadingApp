@@ -7,7 +7,6 @@
   const pool = document.getElementById('condition-pool')
   const slots = document.getElementById('sequence-slots')
   const beginBtn = document.getElementById('begin-trial')
-  const randomizeBtn = document.getElementById('randomize-sequence')
   const clearBtn = document.getElementById('clear-sequence')
   const participantInput = document.getElementById('participant-id')
   let participantId = null
@@ -15,7 +14,7 @@
 
   const readingArea = document.querySelector('.reading-area')
   const CONDITIONS = [
-    { id:'default', label:'Default (Arial, 17px, black on white)', apply: ()=>{/* defautls are applied in reset */} },
+    { id:'default', label:'Default (Arial, 17px, black on white)', apply: ()=>{/* defaults are applied in reset */} },
     { id:'size-small', label:'Size: Small (10px)', apply: ()=>{ if (readingText) readingText.style.fontSize='10px' } },
     { id:'size-large', label:'Size: Large (24px)', apply: ()=>{ if (readingText) readingText.style.fontSize='24px' } },
     { id:'font-verdana', label:'Font: Verdana', apply: ()=>{ if (readingText) readingText.style.fontFamily='Verdana' } },
@@ -169,7 +168,6 @@
     startBtn && startBtn.focus()
   })
 
-  if (randomizeBtn) randomizeBtn.addEventListener('click', randomizeSequence)
   if (clearBtn) clearBtn.addEventListener('click', clearSequence)
   if (participantInput) participantInput.addEventListener('input', updateUI)
 

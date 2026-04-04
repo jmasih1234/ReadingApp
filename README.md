@@ -1,105 +1,115 @@
 # ReadingApp
-This django, Python-based web application will serve as a means to justify and test our HCI-based research hypothesis regarding Visual Design Variables and their Effects on Reading Performance. 
-1. Clone Repository
-2. Install django on personal machine
-3. Make a virtual environment
-   - python -m venv (name)
-   - Windows: venv\Scripts\activate
-   - macOS/Linux: source venv/bin/activate
-   - pip install django
-   - cd ReadingApp
-   - (again) cd ReadingApp
-   - py manage.py runserver
-4. Lots of Other Tutorials on Youtube if this doesn't work
-Web Application Plans
-____________________________________________________________________________________________________________________________________________________
-Build the Reading Test Page
 
-Create Simple Model
+A Django-based web application built to support HCI research into how visual design variables (font size, font family, text/background colour) affect reading speed and user preference.
 
-Create Result model with fields: participant_name, font_type, font_size, text_color, bg_color, wpm, timestamp
-Run python manage.py makemigrations
-Run python manage.py migrate
+## Overview
 
+The app presents participants with 24 text passages (8 conditions × 3 sections each) in a researcher-configured sequence. It automatically measures reading duration, calculates words per minute (WPM), and collects a post-trial preference ranking survey. All data is saved to a database for later analysis.
 
-Build Single Page View
+## Quick Start
 
-Create view in views.py that renders the reading test
-Add URL pattern in urls.py
-Create template with:
+### Prerequisites
 
-Text passage (hardcoded for now)
-"Start" button (starts timer)
-"Done Reading" button (stops timer, calculates WPM)
+- Python 3.10+
+- pip
 
+### Setup
 
-Add Timer Logic (JavaScript)
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd ReadingApp
 
-JavaScript timer that starts/stops
-Calculate WPM: (word count / seconds) × 60
-Auto-submit form with WPM result
+# 2. Create and activate a virtual environment
+python -m venv venv
 
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
 
-Create Results Page
+# 3. Install dependencies
+pip install -r requirements.txt
 
-Simple view that shows: "Your reading speed: X WPM"
-Option to display font settings used
-Link to "Test Again"
+# 4. Navigate to the Django project directory
+cd ReadingApp
 
-____________________________________________________________________________________________________________________________________________________
-Make It Work
+# 5. Apply database migrations
+python manage.py migrate
 
-Connect Frontend to Backend
+# 6. (Optional) Create an admin superuser
+python manage.py createsuperuser
 
-POST form with WPM data
-Save to database
-Redirect to results page
+# 7. Start the development server
+python manage.py runserver
+```
 
+The application is then available at <http://127.0.0.1:8000/>.
 
-Add Basic Styling
+## Usage
 
-CSS to make text readable
-Style buttons
-Make it look clean
+### For Researchers
 
+1. Open the **Home** page and enter a unique **Participant ID** (e.g. `P001`).
+2. Click each condition pill to fill the 8 sequence slots, setting the order in which conditions will appear.
+3. Click **Begin trial** to start the experiment.
+4. After all 24 passages have been read, the participant completes the preference survey.
+5. Access collected data via the Django admin panel at <http://127.0.0.1:8000/admin/>.
 
-Test Locally
+### For Participants
 
-Run server: python manage.py runserver
-Test complete flow
-Verify WPM calculations
-____________________________________________________________________________________________________________________________________________________
-Issue #1: Project Setup
+1. Click **Start** when you are ready to read the displayed passage.
+2. Click **Finished Reading** as soon as you finish.
+3. Repeat for all 24 passages.
+4. Drag and drop the condition cards to rank them from most to least preferred, then click **Submit Survey**.
 
- Create Django project and app
- Set up virtual environment
- Push to GitHub
+## Reading Conditions
 
-Issue #2: Database Model
+| ID | Description |
+|----|-------------|
+| `default` | Arial, 17 px, black on white |
+| `size-small` | 10 px font size |
+| `size-large` | 24 px font size |
+| `font-verdana` | Verdana font family |
+| `font-inter` | Inter font family |
+| `color-wb` | White text on black background |
+| `color-bblue` | Black text on light blue background |
+| `color-bred` | Black text on light red background |
 
- Create Result model
- Run migrations
+## Data Collected
 
-Issue #3: Reading Test Page
+Each trial log stores:
+- Participant ID and condition ID
+- Reading duration (ms) and word count
+- Words per minute (WPM) — calculated automatically if not supplied by the client
 
- Create HTML template with text passage
- Add Start/Stop buttons
- Add basic CSS
+The preference survey stores the participant's ranked ordering of all 8 conditions.
 
-Issue #4: Timer & WPM Calculation
+## Project Structure
 
- JavaScript timer
- Calculate WPM on button click
- Display result
+```
+ReadingApp/
+├── ReadingApp/          # Django project settings, root URLs
+├── appsetup/            # Main application
+│   ├── models.py        # TrialLog, PreferenceSurvey models
+│   ├── views.py         # Page views and API endpoints
+│   ├── urls.py          # URL patterns
+│   ├── admin.py         # Admin registrations
+│   ├── templates/       # HTML templates
+│   └── static/          # CSS, JavaScript, favicon
+├── manage.py
+└── requirements.txt
+```
 
-Issue #5: Save Results
+## API Endpoints
 
- POST form to save WPM
- Redirect to results page
+| Method | URL | Description |
+|--------|-----|-------------|
+| `POST` | `/api/log-trial/` | Save a single trial reading log |
+| `POST` | `/api/save-survey/` | Save participant preference ranking |
 
-Issue #6: Results Page
+## Running Tests
 
- Show WPM result
- Add "Test Again" link
- ____________________________________________________________________________________________________________________________________________________
-5. Django Setup Video: https://www.youtube.com/watch?v=XRFpSDS0_hY 
+```bash
+python manage.py test
+```

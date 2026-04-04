@@ -60,6 +60,7 @@ def log_trial(request):
     )
     return JsonResponse({'ok': True, 'id': log.id})
 
+
 @csrf_exempt
 def save_survey(request):
     if request.method != 'POST':
