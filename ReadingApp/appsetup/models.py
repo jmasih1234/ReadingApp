@@ -8,11 +8,6 @@ class TrialLog(models.Model):
 	wpm = models.FloatField(null=True, blank=True)
 	duration_ms = models.PositiveIntegerField(null=True, blank=True)
 
-	class Meta:
-		indexes = [
-			models.Index(fields=["participant_id"]),
-		]
-
 	def __str__(self):
 		return f"Trial(participant={self.participant_id}, condition={self.condition_id})"
 
