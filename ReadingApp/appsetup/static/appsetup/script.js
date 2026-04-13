@@ -8,7 +8,12 @@
   const slots = document.getElementById('sequence-slots')
   const beginBtn = document.getElementById('begin-trial')
   const clearBtn = document.getElementById('clear-sequence')
+  const randomizeBtn = document.getElementById('randomize-sequence')
   const participantInput = document.getElementById('participant-id')
+  const progressIndicator = document.getElementById('progress-indicator')
+  const progressText = document.getElementById('progress-text')
+  const progressBarFill = document.getElementById('progress-bar-fill')
+  const toastEl = document.getElementById('toast')
   let participantId = null
   let trialStartMs = null
 
@@ -67,6 +72,26 @@
   let currentIndex = 0
   let started = false
 
+  let _toastTimer = null
+  function showToast(msg, type, duration){
+    if (!toastEl) return
+    toastEl.textContent = msg
+    toastEl.className = 'toast' + (type ? ' ' + type : '')
+    // force reflow for re-animation
+    void toastEl.offsetWidth
+    toastEl.classList.add('show')
+    clearTimeout(_toastTimer)
+    _toastTimer = setTimeout(()=>{ toastEl.classList.remove('show') }, duration || 3000)
+  }
+
+  function updateProgress(){
+    if (!progressIndicator) return
+    const total = sections.length
+    const done = currentIndex
+    if (progressText) progressText.textContent = `Section ${done} of ${total}`
+    if (progressBarFill) progressBarFill.style.width = total > 0 ? `${(done / total) * 100}%` : '0%'
+  }
+
   function resetReadingStyles(){
     if (readingText){
       readingText.style.fontFamily = DEFAULTS.fontFamily
@@ -103,7 +128,7 @@
     slots.innerHTML=''
     sequence.forEach((condId, idx)=>{
       const slot = document.createElement('div')
-      slot.className='slot'
+      slot.className = condId ? 'slot filled' : 'slot'
       const label = document.createElement('span')
       label.className='label'
       const startTrial = idx * 3 + 1
@@ -118,7 +143,8 @@
         const clearBtn = document.createElement('button')
         clearBtn.type='button'
         clearBtn.className='clear'
-        clearBtn.textContent='x'
+        clearBtn.textContent='×'
+        clearBtn.title='Remove'
         clearBtn.addEventListener('click', ()=>{ sequence[idx]=null; updateUI() })
         slot.appendChild(clearBtn)
       }
@@ -160,7 +186,9 @@
     const top = document.querySelector('.top-action'); const bottom=document.querySelector('.bottom-action')
     if (top) top.classList.remove('hidden')
     if (bottom) bottom.classList.remove('hidden')
+    if (progressIndicator) progressIndicator.classList.remove('hidden')
     currentIndex = 0; started=false
+    updateProgress()
     showMessage('Press Start to begin.')
     if (startBtn){ startBtn.disabled = false; startBtn.classList.remove('hidden') }
     if (endBtn) endBtn.disabled = true
@@ -169,6 +197,7 @@
   })
 
   if (clearBtn) clearBtn.addEventListener('click', clearSequence)
+  if (randomizeBtn) randomizeBtn.addEventListener('click', randomizeSequence)
   if (participantInput) participantInput.addEventListener('input', updateUI)
 
   function showMessage(msg){ if (readingText) readingText.textContent = msg }
@@ -240,6 +269,7 @@
 
     currentIndex += 1
     resetReadingStyles()
+    updateProgress()
     if (currentIndex >= sections.length){
       if (startBtn){ startBtn.disabled = true; startBtn.classList.add('hidden') }
       if (endBtn){ endBtn.disabled = true; endBtn.classList.add('hidden') }
@@ -368,13 +398,14 @@
   if (submitSurveyBtn) {
     submitSurveyBtn.addEventListener('click', () => {
       if (surveyRanking.length !== 8) {
-        alert('Please rank all 8 conditions.')
+        showToast('Please rank all 8 conditions.', 'error')
         return
       }
       const payload = {
         participant_id: participantId,
         ranked_conditions: surveyRanking
       }
+      submitSurveyBtn.disabled = true
       fetch('/api/save-survey/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -383,13 +414,17 @@
         .then(resp => resp.json())
         .then(data => {
           if (data.ok) {
-            alert('Survey submitted successfully! Thank you.')
-            preferenceSurvey.innerHTML = '<p style="color:#10b981;font-size:18px;text-align:center;padding:40px;">Survey complete. Thank you for participating!</p>'
+            showToast('Survey submitted successfully! Thank you.', 'success', 5000)
+            preferenceSurvey.innerHTML = '<p style="color:#10b981;font-size:20px;font-weight:600;text-align:center;padding:60px 40px;">✓ Survey complete. Thank you for participating!</p>'
           } else {
-            alert('Survey submission failed.')
+            showToast('Survey submission failed. Please try again.', 'error')
+            submitSurveyBtn.disabled = false
           }
         })
-        .catch(() => alert('Survey submission error.'))
+        .catch(() => {
+          showToast('Survey submission error. Please check your connection.', 'error')
+          submitSurveyBtn.disabled = false
+        })
     })
   }
 

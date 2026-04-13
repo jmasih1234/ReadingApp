@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="{% static 'appsetup/favicon.svg' %}" type="image/svg+xml">
-  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}?v=4">
+  <link rel="stylesheet" href="{% static 'appsetup/style.css' %}?v=5">
 </head>
 <body>
   <header class="header-section">
@@ -33,6 +33,13 @@
           <button id="end-btn" class="btn danger hidden">Finished Reading</button>
         </div>
 
+        <div id="progress-indicator" class="progress-indicator hidden">
+          <span class="progress-text" id="progress-text">Section 0 of 24</span>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+        </div>
+
         <article class="text-block reading-area">
           <p id="reading-text">
             This is where our text will show up for the reader...
@@ -54,6 +61,7 @@
     </div>
 
     <div class="ordering-actions">
+      <button id="randomize-sequence" class="btn secondary">Randomize</button>
       <button id="clear-sequence" class="btn outline">Clear</button>
       <button id="begin-trial" class="btn primary" disabled>Begin trial</button>
     </div>
@@ -73,7 +81,8 @@
     </div>
   </main>
 
-  <script src="{% static 'appsetup/script.js' %}?v=3"></script>
+  <script src="{% static 'appsetup/script.js' %}?v=4"></script>
   {{ sections|json_script:"sections-data" }}
+  <div id="toast" class="toast"></div>
 </body>
 </html>
